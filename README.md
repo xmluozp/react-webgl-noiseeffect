@@ -35,13 +35,13 @@ npm i react-webgl-noiseeffect
 ```javascript
 import NoiseEffect from 'react-webgl-noiseeffect';
 
-...
+//...
   const images = [
     { src: "images/01.png", width: 128, height: 128 },
     { src: "images/02.png", width: 128, height: 128 },
     { src: "images/03.png", width: 128, height: 128 },
   ]
-...
+//...
     <NoiseEffect images={images} />
 ```
 
