@@ -2,10 +2,10 @@
 
 https://xmluozp.github.io/react-webgl-noiseeffect/
 
-(This is a noise effect inspired from Kenji Saito: https://codepen.io/kenjiSpecial/pen/wavooR)
+## Description:
 
-## What I did:
-======
+*This is a noise effect inspired from Kenji Saito: https://codepen.io/kenjiSpecial/pen/wavooR*
+
 Reduced vertices for smaller icons to prevent to be choppy when presented with a number of elements.
 
 Made it easier to be customized.
@@ -73,13 +73,13 @@ export default App;
 
 | Props         | Type          | Default             | Desc                                  |
 | ------------- | ------------- | ------------------- | ------------------------------------- |
-| images        | Array         |  []                 | {src:string, width: int, height: int} |
-| id            | String        |  canvas_noiseeffect | Used to locate the Canvas             |
-| index         | int           |  0                  | Index of current displaing image      |
-| color         | are neat      |  "#FFFFFF"          |                                       |
-| display       | are neat      |    true             |                                       |
-| density       | are neat      |    0.5              |                                       |
-| speed         | are neat      |    1                | How fast of switching image           |
-| onLoad        | are neat      |    null             | A Call back when the Canvas ready     |
+| images        | Array         |  []                 | [{src:string, width: int, height: int}] |
+| id            | String        | "canvas_noiseeffect"| Used to locate the Canvas             |
+| index         | Integer       |  0                  | Index of current displaing image      |
+| color         | String        |  "#FFFFFF"          |                                       |
+| display       | Boolean       |    true             |                                       |
+| density       | Float         |    0.5              |                                       |
+| speed         | Float         |    1                | How fast of switching image           |
+| onLoad        | Function      |    null             | A Call back when the Canvas ready     |
 
 
