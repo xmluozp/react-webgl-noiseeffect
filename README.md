@@ -1,25 +1,31 @@
-This is a noise effect inspired from Kenji Saito: https://codepen.io/kenjiSpecial/pen/wavooR
+### Demo:
+
+https://xmluozp.github.io/react-webgl-noiseeffect/
+
+(This is a noise effect inspired from Kenji Saito: https://codepen.io/kenjiSpecial/pen/wavooR)
 
 ### What I did:
-
+======
 Reduced vertices for smaller icons to prevent to be choppy when presented with a number of elements.
 
 Made it easier to be customized.
 
 Wrapped it into a React component.
 
-### How to use:
-
-Preconditions:
-
+## Preconditions:
+======
 Images array is required.
 
-Your picture's background has to be pure black or transparent (Black will be treated as transparent, other colors will be read as a vertice). Pixel pictures perform best.
+Your picture's background has to be pure black or transparent (Black will be treated as transparent, other colors will be read as vertices). Pixel pictures perform best.
 
+## Installation:
+======
 ```
 npm i react-webgl-noiseeffect
 ```
 
+## Usage:
+======
 ```javascript
 import React, { useState } from 'react';
 import './App.css';
@@ -63,6 +69,17 @@ export default App;
 
 ```
 
-
+## Customize:
+======
+| Props         | Type          | Default             | Desc                                  |
+| ------------- |:-------------:| -----:              | -----:                                |
+| images        | Array         |  []                 | {src:string, width: int, height: int} |
+| id            | String        |  canvas_noiseeffect | Used to locate the Canvas             |
+| index         | int           |  0                  | Index of current displaing image      |
+| color         | are neat      |  "#FFFFFF"          |                                       |
+| display       | are neat      |    true             |                                       |
+| density       | are neat      |    0.5              |                                       |
+| speed         | are neat      |    1                | How fast of switching image           |
+| onLoad        | are neat      |    null             | A Call back when the Canvas ready     |
 
 

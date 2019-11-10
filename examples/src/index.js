@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
 import NoiseEffect from '../../src';
+
 const App = () => {
 
     const [imageIndex, setImageIndex] = useState(0)
     const [display, setDisplay] = useState(true)
 
     const images = [
-        { src: "examples/src/images/01.png", width: 128, height: 128 },
-        { src: "examples/src/images/02.png", width: 128, height: 128 },
-        { src: "examples/src/images/03.png", width: 64, height: 64 },
+        { src: "images/01.png", width: 128, height: 128 },
+        { src: "images/02.png", width: 128, height: 128 },
+        { src: "images/03.png", width: 128, height: 128 },
     ]
 
     return (

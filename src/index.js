@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import NoiseEffect from './utils/effect.js';
 import './styles.css';
 
-const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, display, density, onLoad, speed }) => {
+const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, display, density, onLoad, speed = 1 }) => {
 
     const effect = new NoiseEffect(images);
 
