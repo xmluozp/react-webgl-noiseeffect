@@ -12,7 +12,7 @@ window.cancelRequestAnimFrame = (function () {
  */
 class NoiseEffect {
 
-    constructor(images) {
+    constructor(images = []) {
         // initialize images
         imageURLArr = images;
     }
@@ -40,20 +40,19 @@ const SHOW_UP_SPEED = .3;
 const Z_DIMENSION = 1.3;
 const DEFAULT_POINT_NUMBER = 50000;
 
-var canvas, gl,
-    drawType,
-    g_density,
-    numLines;
-var target;
-var frameId;
-
-var imageURLArr = [];
-
-var perspectiveMatrix;
-var g_RandomTargetXArr = [], g_RandomTargetYArr = [];
-var effectOnLoad;
-var loaded;
-var canvasId;
+let canvas,                     // canvas object to draw
+    gl,                         // webGL object
+    drawType,                   // current index of picture
+    g_density,                  // density of effect
+    numLines,                   // control how many vertices will print
+    frameId,                    // used to control animation
+    imageURLArr = [],           // store array of images information
+    target = [],                // store array of images object
+    g_RandomTargetXArr = [],    // store default x and y of vertices (the animation will show it with random deviation)
+    g_RandomTargetYArr = [],
+    effectOnLoad,               // callback
+    loaded;                     // a bool to check if initialization done. 
+             
 
 
 function initVaribles() {
@@ -78,34 +77,37 @@ function initVaribles() {
  */
 const load = function (i_canvasId, defaultPicture=0, color="#FFFFFF", isShow=true, density = 0.5, i_onLoad) {
 
-    effectOnLoad = i_onLoad;
-    g_density = density;
-
-    canvasId = i_canvasId;
-    drawType = (defaultPicture && defaultPicture >= 0) ? defaultPicture : 0;
-    canvas = document.getElementById(canvasId);
-
-    // 初始化变量
-    initVaribles();
-    var tempCanvas = document.createElement("canvas");
-    var ctx = tempCanvas.getContext('2d', { alpha: false });
-
-    const promisesArray = imageURLArr.map((item, number) => {
-
-        return new Promise((resolve, reject) => {
-            var image = new Image();
-            image.crossOrigin = "Anonymous";
-            image.src = item.src;
-            image.onload = onLoadImageHandler.bind(this, image, tempCanvas, ctx, number, resolve);
-            image.onerror = reject
+    try {
+        effectOnLoad = i_onLoad;
+        g_density = density;
+    
+        drawType = (defaultPicture && defaultPicture >= 0) ? defaultPicture : 0;
+        canvas = document.getElementById(i_canvasId);
+    
+        // 初始化变量
+        initVaribles();
+        var tempCanvas = document.createElement("canvas");
+        var ctx = tempCanvas.getContext('2d', { alpha: false });
+    
+        const promisesArray = imageURLArr.map((item, number) => {
+    
+            return new Promise((resolve, reject) => {
+                var image = new Image();
+                image.crossOrigin = "Anonymous";
+                image.src = item.src;
+                image.onload = onLoadImageHandler.bind(this, image, tempCanvas, ctx, number, resolve);
+                image.onerror = reject
+            })
         })
-    })
-
-    Promise.all(promisesArray).then(() => {
-        loadScene(color, isShow);
-    }).catch(() => {
-        console.log(imageURLArr, "error");
-    })
+    
+        Promise.all(promisesArray).then(() => {
+            loadScene(color, isShow);
+        }).catch(() => {
+            console.log(imageURLArr, "error");
+        })     
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 /**
@@ -308,7 +310,7 @@ function setSize(w, h) {
     var d = (2 * farPlane * nearPlane) / (farPlane - nearPlane);
     var x = (2 * nearPlane) / (right - left);
     var y = (2 * nearPlane) / (top - bottom);
-    perspectiveMatrix = [
+    var perspectiveMatrix = [
         x, 0, a, 0,
         0, y, b, 0,
         0, 0, c, d,

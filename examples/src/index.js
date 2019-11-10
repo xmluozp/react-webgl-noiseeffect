@@ -9,7 +9,7 @@ const App = () => {
     const images = [
         { src: "examples/src/images/01.png", width: 128, height: 128 },
         { src: "examples/src/images/02.png", width: 128, height: 128 },
-        { src: "examples/src/images/03.png", width: 128, height: 128 },
+        { src: "examples/src/images/03.png", width: 64, height: 64 },
     ]
 
     return (
