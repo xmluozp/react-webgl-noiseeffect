@@ -1,6 +1,4 @@
-## Demo:
 
-https://xmluozp.github.io/react-webgl-noiseeffect/
 
 ## Description:
 
@@ -11,6 +9,12 @@ Reduced vertices for smaller icons to prevent to be choppy when presented with a
 Made it easier to be customized.
 
 Wrapped it into a React component.
+
+Allow multiple icons.
+
+## Demo:
+
+https://xmluozp.github.io/react-webgl-noiseeffect/
 
 ## Preconditions:
 
