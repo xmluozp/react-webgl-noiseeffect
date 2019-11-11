@@ -1,6 +1,6 @@
 {
   "name": "react-webgl-noiseeffect",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "description": "React component for WebGl noise effect.",
   "main": "dist/index.js",
   "scripts": {

@@ -172,8 +172,6 @@ class NoiseEffect {
         var rate = (canvas.width * canvas.height) / (256 * 256);
         // 根据指定的宽高决定精度
         returnValue = parseInt(returnValue * rate * g_density);
-        console.log(rate);
-        console.log(returnValue);
         return 100000 > returnValue ? returnValue : 100000;
     }
 

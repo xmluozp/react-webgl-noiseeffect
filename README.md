@@ -107,8 +107,8 @@ export default App;
 | Props         | Type          | Default             | Desc                                  |
 | ------------- | ------------- | ------------------- | ------------------------------------- |
 | images        | Array         |  []                 | [{src:string, width: int, height: int}] |
-| id            | String        | "canvas_noiseeffect"| Used to locate the Canvas             |
-| index         | Integer       |  0                  | Index of current displaing image      |
+| id            | String        | "canvas_noiseeffect"| id of Canvas, in case of multiple effects |
+| index         | Integer       |  0                  | Index of current displaying image      |
 | color         | String        |  "#FFFFFF"          |                                       |
 | display       | Boolean       |    true             |                                       |
 | density       | Float         |    0.5              |                                       |
