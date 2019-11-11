@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { render } from 'react-dom';
 import NoiseEffect from '../../src';
 
+
 const App = () => {
 
     const [imageIndex, setImageIndex] = useState(0)
@@ -11,6 +12,7 @@ const App = () => {
         { src: "images/01.png", width: 128, height: 128 },
         { src: "images/02.png", width: 128, height: 128 },
         { src: "images/03.png", width: 128, height: 128 },
+
     ]
 
     return (
@@ -24,6 +26,7 @@ const App = () => {
                 density = {0.6}
                 speed = {0.5}
                 onLoad={() => { console.log("loaded") }} />
+
 
             <div>
                 <button onClick={() => { setImageIndex(0) }}>switch to 0</button>

@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
-import NoiseEffect from './utils/effect.js';
+import React, { useEffect, useState } from 'react';
+import NoiseEffect from './utils/effectClass.js';
 import './styles.css';
+
 
 const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, display, density, onLoad, speed = 1 }) => {
 
-    const effect = new NoiseEffect(images);
+    const [effect, setEffect] = useState(new NoiseEffect(images));
 
     useEffect(() => {
-        
+
         effect.load(id, index, color ,display, density, onLoad);
-        
+
         return () => {
             effect.unload();
         };
@@ -20,7 +21,6 @@ const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color,
     }, [index])
 
     useEffect(() => {
-
         if (display) {
             effect.fadeIn();
         } else {

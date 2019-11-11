@@ -11,11 +11,12 @@ window.cancelRequestAnimFrame = (function () {
  * ===================== export functions =========================
  */
 class NoiseEffect {
-
     constructor(images = []) {
         // initialize images
         imageURLArr = images;
     }
+    
+
     load(...attr) {
         load(...attr);
     }
@@ -76,7 +77,6 @@ function initVaribles() {
  * @param {*} defaultPicture 
  */
 const load = function (i_canvasId, defaultPicture=0, color="#FFFFFF", isShow=true, density = 0.5, i_onLoad) {
-
     try {
         effectOnLoad = i_onLoad;
         g_density = density;
