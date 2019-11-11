@@ -3,13 +3,13 @@ import NoiseEffect from './utils/effectClass.js';
 import './styles.css';
 
 
-const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, display, density, onLoad, speed = 1 }) => {
+const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, display, density, onLoad, blur, speed = 1 }) => {
 
     const [effect, setEffect] = useState(new NoiseEffect(images));
 
     useEffect(() => {
 
-        effect.load(id, index, color ,display, density, onLoad);
+        effect.load(id, index, color ,display, density, blur ,onLoad);
 
         return () => {
             effect.unload();
@@ -28,6 +28,9 @@ const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color,
         }
     }, [display])
 
+    useEffect(() => {
+        effect.setBlur(blur);
+    }, [blur])
 
     return (
         <canvas id={id}>

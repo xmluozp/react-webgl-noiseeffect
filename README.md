@@ -69,25 +69,31 @@ function App() {
   ]
 
   return (
-    <div style={{background: '#000'}}>
+    <div>
+        <NoiseEffect
+            id="c"
+            images={images}
+            index={imageIndex}
+            color="#A0B0FF"
+            display={display}
+            density={0.6}
+            speed={0.5}
+            blur={blur}
+            onLoad={() => { console.log("loaded") }}
+        />
 
-    <NoiseEffect
-        images={images}
-        id="c"
-        index={imageIndex}
-        color="#A0B0FF"
-        display={display}
-        density={0.6}
-        speed={0.5}
-        onLoad={() => { console.log("loaded") }} />
+        <div>
+            <button onClick={() => { setImageIndex(0) }}>switch to 0</button>
+            <button onClick={() => { setImageIndex(1) }}>switch to 1</button>
+            <button onClick={() => { setImageIndex(2) }}>switch to 2</button>
+            <button onClick={() => { setImageIndex(3) }}>switch to 3</button>
+            <button onClick={() => { setDisplay(false) }}>Fade Out</button>
+            <button onClick={() => { setDisplay(true) }}>Fade In</button>
+            <button onClick={() => { setBlur(3) }}>Blur(3)</button>
+            <button onClick={() => { setBlur(1) }}>Blur(1)</button>
+            <button onClick={() => { setBlur(0.5) }}>Blur(0.5)</button>
 
-      <div>
-        <button onClick={() => { setImageIndex(0) }}>switch to 0</button>
-        <button onClick={() => { setImageIndex(1) }}>switch to 1</button>
-        <button onClick={() => { setImageIndex(2) }}>switch to 2</button>
-        <button onClick={() => { setDisplay(false) }}>Fade Out</button>
-        <button onClick={() => { setDisplay(true) }}>Fade In</button>
-      </div>
+        </div>
     </div>
   );
 }
@@ -107,6 +113,7 @@ export default App;
 | display       | Boolean       |    true             |                                       |
 | density       | Float         |    0.5              |                                       |
 | speed         | Float         |    1                | How fast of switching image           |
+| blur          | Float         |    1                | How crazy are those points flying |
 | onLoad        | Function      |    null             | A Call back when the Canvas ready     |
 
 

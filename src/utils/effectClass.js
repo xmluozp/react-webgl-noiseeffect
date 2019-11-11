@@ -16,10 +16,8 @@ const DEFAULT_POINT_NUMBER = 50000;
  */
 class NoiseEffect {
     constructor(images = []) {
-        console.log("new");
-        // initialize images
-        this.test = "constructed";
 
+        // initialize images
         this.canvas = null;                     // canvas object to draw
         this.gl = null;                         // webGL object
         this.drawType = 0;                   // current index of picture
@@ -36,20 +34,19 @@ class NoiseEffect {
         this.g_Vertices = [];
         this.coefficient = .1;
         this.targetCoefficient = .01;
+        this.blur = 1;
     }
 
-    load(i_canvasId, defaultPicture = 0, color = "#FFFFFF", isShow = true, density = 0.5, i_onLoad) {
+    load(i_canvasId, defaultPicture = 0, color = "#FFFFFF", isShow = true, density = 0.5, blur = 1, i_onLoad) {
         try {
             // 初始化变量
-            this.test = "loaded";
-
             this.effectOnLoad = i_onLoad;
             this.g_density = density;
             this.drawType = (defaultPicture && defaultPicture >= 0) ? defaultPicture : 0;
             this.canvas = document.getElementById(i_canvasId);
             this.gl = this.canvas.getContext("experimental-webgl");
             this.numLines = this.getNumLines(0);
-
+            this.blur = blur;
 
             // initVaribles();
             var tempCanvas = document.createElement("canvas");
@@ -101,7 +98,13 @@ class NoiseEffect {
         }
     }
 
+    setBlur(blur) {
+        this.blur = blur;
+    }
 
+    vibe(coefficient) {
+        this.coefficient = coefficient;
+    }
 
     /**
      * =====================  =========================
@@ -166,9 +169,11 @@ class NoiseEffect {
         var g_density = this.g_density;
 
         var returnValue = DEFAULT_POINT_NUMBER;
+        var rate = (canvas.width * canvas.height) / (256 * 256);
         // 根据指定的宽高决定精度
-        returnValue = parseInt(returnValue * (canvas.width * canvas.height / DEFAULT_POINT_NUMBER) * g_density);
-
+        returnValue = parseInt(returnValue * rate * g_density);
+        console.log(rate);
+        console.log(returnValue);
         return 100000 > returnValue ? returnValue : 100000;
     }
 
@@ -277,7 +282,6 @@ class NoiseEffect {
 
 
         this.loaded = true;
-        console.log(this.loaded);
 
         if (typeof (this.effectOnLoad) === "function") {
             this.effectOnLoad();
@@ -356,7 +360,7 @@ class NoiseEffect {
         gl.uniformMatrix4fv(uModelViewMatrix, false, new Float32Array(perspectiveMatrix));
         gl.uniformMatrix4fv(uPerspectiveMatrix, false, new Float32Array(modelViewMatrix));
     }
-    
+
     // js trigger animate
     animate() {
         this.frameId = requestAnimationFrame(this.animate.bind(this));
@@ -469,7 +473,7 @@ class NoiseEffect {
         // coefficient 跳荡，无限趋近于targetCoefficient. 幅度取决于：初始值多大
         this.coefficient += (this.targetCoefficient - this.coefficient) * .1;
 
-        const blur = this.coefficient / 2;
+        const blur = this.coefficient * this.blur;
         const movingSpeed = this.coefficient * 2;
 
         const t_numOfLines = this.numLines * 2;
@@ -556,11 +560,11 @@ class NoiseEffect {
                 for (let index = 0; index < newVLength; index += 6) {
 
                     const targetIndex = index / 6;
-                    tempVArray[index] = g_RandomTargetXArr[targetIndex];
-                    tempVArray[index + 1] = g_RandomTargetYArr[targetIndex];
+                    tempVArray[index] = this.g_RandomTargetXArr[targetIndex];
+                    tempVArray[index + 1] = this.g_RandomTargetYArr[targetIndex];
                     tempVArray[index + 2] = Z_DIMENSION;
-                    tempVArray[index + 3] = g_RandomTargetXArr[targetIndex];
-                    tempVArray[index + 4] = g_RandomTargetYArr[targetIndex];
+                    tempVArray[index + 3] = this.g_RandomTargetXArr[targetIndex];
+                    tempVArray[index + 4] = this.g_RandomTargetYArr[targetIndex];
                     tempVArray[index + 5] = Z_DIMENSION;
                 }
                 this.g_Vertices = tempVArray;
@@ -577,15 +581,23 @@ class NoiseEffect {
 
     imgSwitch(picNumber, newCoefficient, w, h) {
 
-        console.log("switch", this);
-        this.coefficient = newCoefficient ? newCoefficient : .2;
-        if (this.loaded) {
+        try {
 
-            this.drawType = picNumber;
+            if(this.imageURLArr[picNumber] === undefined) {
+                throw `Image index ${ picNumber} is out of range.`;
+            }
 
-            // resize will cover the changing effect
-            this.resize(w, h);
-            this.resetVertices(picNumber);
+            this.coefficient = newCoefficient ? newCoefficient : .2;
+            if (this.loaded) {
+    
+                this.drawType = picNumber;
+    
+                // resize will cover the changing effect
+                this.resize(w, h);
+                this.resetVertices(picNumber);
+            }           
+        } catch (error) {
+            console.log("Image switch error:", error);
         }
     }
 }
