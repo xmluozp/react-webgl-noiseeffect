@@ -86,7 +86,6 @@ function App() {
             <button onClick={() => { setImageIndex(0) }}>switch to 0</button>
             <button onClick={() => { setImageIndex(1) }}>switch to 1</button>
             <button onClick={() => { setImageIndex(2) }}>switch to 2</button>
-            <button onClick={() => { setImageIndex(3) }}>switch to 3</button>
             <button onClick={() => { setDisplay(false) }}>Fade Out</button>
             <button onClick={() => { setDisplay(true) }}>Fade In</button>
             <button onClick={() => { setBlur(3) }}>Blur(3)</button>

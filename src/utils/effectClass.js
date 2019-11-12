@@ -1,3 +1,5 @@
+import 'babel-polyfill'; // deal with Promise in IE
+
 window.cancelRequestAnimFrame = (function () {
     return window.cancelAnimationFrame ||
         window.webkitCancelRequestAnimationFrame ||
@@ -38,6 +40,7 @@ class NoiseEffect {
     }
 
     load(i_canvasId, defaultPicture = 0, color = "#FFFFFF", isShow = true, density = 0.5, blur = 1, i_onLoad) {
+
         try {
             // 初始化变量
             this.effectOnLoad = i_onLoad;
@@ -53,7 +56,7 @@ class NoiseEffect {
             var ctx = tempCanvas.getContext('2d', { alpha: false });
 
             const promisesArray = this.imageURLArr.map((item, number) => {
-
+                
                 return new Promise((resolve, reject) => {
                     var image = new Image();
                     image.crossOrigin = "Anonymous";
@@ -66,10 +69,10 @@ class NoiseEffect {
             Promise.all(promisesArray).then(() => {
                 this.loadScene(color, isShow);
             }).catch((error) => {
-                console.log(this.imageURLArr, error);
+                console.log("error on loadScene", this.imageURLArr, error);
             })
         } catch (error) {
-            console.log(error);
+            console.log("error on load", error);
         }
     }
     unload() {
@@ -119,7 +122,6 @@ class NoiseEffect {
      * @param {*} number 
      */
     onLoadImageHandler(image, tempCanvas, ctx, number, resolve) {
-
         var target = this.target;
         var imageURLArr = this.imageURLArr;
 
@@ -461,6 +463,7 @@ class NoiseEffect {
 
 
     draw() {
+
         // cn += .1;
         var g_Vertices = this.g_Vertices;
         var g_RandomTargetXArr = this.g_RandomTargetXArr;
@@ -570,15 +573,13 @@ class NoiseEffect {
 
             this.numLines = newNumLines;
         } catch (error) {
-            console.error(error);
+            console.error("error on resetVertices: ", error);
         }
     }
 
 
     // -------------------------------
-
     imgSwitch(picNumber, newCoefficient, w, h) {
-
         try {
 
             if(this.imageURLArr[picNumber] === undefined) {
@@ -595,13 +596,9 @@ class NoiseEffect {
                 this.resetVertices(picNumber);
             }           
         } catch (error) {
-            console.log("Image switch error:", error);
+            console.log("error on image switch: ", error);
         }
     }
 }
-
-
-
-
 
 export default NoiseEffect;

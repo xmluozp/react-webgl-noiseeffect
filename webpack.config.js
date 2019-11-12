@@ -25,5 +25,6 @@ module.exports = {
    extensions: [".js", ".jsx"]
  },
  devServer: {
+  disableHostCheck: true,
    port: 3001
 }};
