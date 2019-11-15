@@ -34,6 +34,7 @@ class NoiseEffect {
         this.loaded = false;             // a bool to check if initialization done. 
         this.numLinesFade = 0;
         this.g_Vertices = [];
+        this.g_colors = [];
         this.coefficient = .1;
         this.targetCoefficient = .01;
         this.blur = 1;
@@ -150,7 +151,16 @@ class NoiseEffect {
                 var currentY = parseInt(currentI / tempCanvas.height);
 
                 if (currentX % density === 0 || currentY % density === 0) {
-                    var pos = { x: currentX / tempCanvas.width - .5, y: -currentY / tempCanvas.height + 0.5 }
+
+                    // console.log(data[index]);
+                    var pos = { 
+                        x: currentX / tempCanvas.width - .5, 
+                        y: -currentY / tempCanvas.height + 0.5,
+                        r: Math.round(data[index] / 255 * 10) / 10,
+                        g: Math.round(data[index + 1] / 255 * 10) / 10,
+                        b: Math.round(data[index + 2] / 255 * 10) / 10,
+                        a: data[index+3],
+                    }
                     target[number].push(pos);
                 }
             }
@@ -209,22 +219,24 @@ class NoiseEffect {
 
         gl.viewport(0, 0, canvas.width, canvas.height);
 
-        const RGBA = `${this.hexToRgb(color).r}, ${this.hexToRgb(color).g}, ${this.hexToRgb(color).b}, 1.0`;
         const shaderfs = `
-        precision highp float;
+        varying lowp vec4 vColor;
     
         void main(void) {
-        gl_FragColor = vec4(${RGBA});
+        gl_FragColor = vColor;
         }
     `;
         const shadervs = `
         attribute vec3 vertexPosition;
-        
+        attribute vec4 vertexColor;
+
         uniform mat4 modelViewMatrix;
         uniform mat4 perspectiveMatrix;
-    
+        varying lowp vec4 vColor;
+
         void main(void) {
         gl_Position = perspectiveMatrix * modelViewMatrix * vec4(  vertexPosition, 1.0);
+        vColor = vertexColor;
         }
     `;
 
@@ -247,10 +259,14 @@ class NoiseEffect {
             return;
         }
 
+        // initialize a shader program: tell WebGl how to draw
         gl.program = gl.createProgram();
+        // link program with shader
         gl.attachShader(gl.program, vertexShader);
         gl.attachShader(gl.program, fragmentShader);
         gl.linkProgram(gl.program);
+
+
         if (!gl.getProgramParameter(gl.program, gl.LINK_STATUS)) {
             alert("Unable to initialise shaders");
             gl.deleteProgram(gl.program);
@@ -259,27 +275,33 @@ class NoiseEffect {
             return;
         }
         gl.useProgram(gl.program);
+
+        // 建立缓冲区
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+
+        // 绑定到shader
         var vertexPosition = gl.getAttribLocation(gl.program, "vertexPosition");
+        var vertexColor = gl.getAttribLocation(gl.program, "vertexColor");
+
+        // 第五个属性0，紧密打包。无间隙。
+        // 顶点的位置信息
+        gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 28, 0);
+
+        // 顶点的颜色信息
+        gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 28, 12);
+
         gl.enableVertexAttribArray(vertexPosition);
-        // gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        // gl.clearDepth(1.0);
+        gl.enableVertexAttribArray( vertexColor);
 
         gl.enable(gl.BLEND);
         gl.disable(gl.DEPTH_TEST);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
-        var vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-
-        // ------------------
-
-        // this.initilizeVertices();
 
         // ------------------
 
         this.setSize(canvas.width, canvas.height);
         window.cancelRequestAnimFrame(this.frameId);
-
 
         this.loaded = true;
 
@@ -291,33 +313,6 @@ class NoiseEffect {
         if (isShow) this.fadeIn();
     }
 
-    /**
-     * first: set vertices
-     */
-    // initilizeVertices() {
-
-    //     var target = this.target;
-
-    //     var vertices = [];
-    //     var randomTargetXArr = [];
-    //     var randomTargetYArr = [];
-    //     var drawType = this.drawType;
-    //     // -------------------------------
-    //     this.numLines = this.getNumLines(drawType);
-
-    //     // 强行循环n次，每次都从图片里任意x,t值上取一个点，处理以后存起来.这个点的信息只有x和y（之前自定义的对象）
-    //     for (var ii = 0; ii < this.numLines; ii++) {
-    //         vertices.push(0, 0, Z_DIMENSION, 0, 0, Z_DIMENSION);
-    //         var randomPos = target[drawType][parseInt(target[drawType].length * Math.random())];
-    //         randomTargetXArr.push(randomPos.x);
-    //         randomTargetYArr.push(randomPos.y);
-    //     }
-
-
-    //     this.g_Vertices = new Float32Array(vertices);
-    //     this.g_RandomTargetXArr = new Float32Array(randomTargetXArr);
-    //     this.g_RandomTargetYArr = new Float32Array(randomTargetYArr);
-    // }
 
 
 
@@ -352,8 +347,6 @@ class NoiseEffect {
             0, 0, 1, 0,
             0, 0, 0, 1
         ];
-        var vertexPosAttribLocation = gl.getAttribLocation(gl.program, "vertexPosition");
-        gl.vertexAttribPointer(vertexPosAttribLocation, 3.0, gl.FLOAT, false, 0, 0);
 
         var uModelViewMatrix = gl.getUniformLocation(gl.program, "modelViewMatrix");
         var uPerspectiveMatrix = gl.getUniformLocation(gl.program, "perspectiveMatrix");
@@ -448,6 +441,8 @@ class NoiseEffect {
 
         this.draw();
         gl.lineWidth(1);
+
+        // 这个动作不是绘图，而是重新设定buffer。而绘画是从buffer里面取数据。所以在当前步骤，程序并不关心buffer里面是什么。
         gl.bufferData(gl.ARRAY_BUFFER, this.g_Vertices, gl.DYNAMIC_DRAW);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawArrays(gl.LINES, 0, numLines);
@@ -482,14 +477,14 @@ class NoiseEffect {
         const t_numOfLines = this.numLines * 2;
 
         // draw pixels
-
         for (let i = 0; i < t_numOfLines; i += 2) {
 
             num = parseInt(i / 2);
-            bp = i * 3;
 
-            g_Vertices[bp] = g_Vertices[bp + 3];
-            g_Vertices[bp + 1] = g_Vertices[bp + 4];
+            bp = i * 7;
+
+            g_Vertices[bp] = g_Vertices[bp + 7];
+            g_Vertices[bp + 1] = g_Vertices[bp + 8];
 
             //var pos = target[parseInt(target.length * Math.random())];
 
@@ -497,26 +492,17 @@ class NoiseEffect {
             targetPosX = g_RandomTargetXArr[num];
             targetPosY = g_RandomTargetYArr[num];
 
-            px = g_Vertices[bp + 3];
+            px = g_Vertices[bp + 7];
             // 前者是速度，后者是散布
             // cof等于tcof之前，都加速，等于的时候就不加速。所以加速度取决于这两个差
             px += (targetPosX - px) * movingSpeed + (Math.random() - .5) * blur;
-            g_Vertices[bp + 3] = px;
+            g_Vertices[bp + 7] = px;
 
-            py = g_Vertices[bp + 4];
+            py = g_Vertices[bp + 8];
             py += (targetPosY - py) * movingSpeed + (Math.random() - .5) * blur;
-            g_Vertices[bp + 4] = py;
+            g_Vertices[bp + 8] = py;
         }
     }
-
-    // ===================================
-
-
-
-
-    // -------------------------------
-
-
 
     /**
      * switch: set vertices
@@ -526,6 +512,7 @@ class NoiseEffect {
         try {
             var randomTargetXArr = [];
             var randomTargetYArr = [];
+            var randomTargetIndex = [];
 
             // -------------------------------
             const newNumLines = this.getNumLines(index);
@@ -533,19 +520,18 @@ class NoiseEffect {
             const imageLength = image.length;
 
             const gvLength = this.g_Vertices.length;
-            const newVLength = newNumLines * 6;
+            const newVLength = newNumLines * 14;
 
 
             for (var ii = 0; ii < newNumLines; ii++) {
                 var randomPos = image[parseInt(imageLength * Math.random())];
                 randomTargetXArr.push(randomPos.x);
                 randomTargetYArr.push(randomPos.y);
+                randomTargetIndex.push(randomPos);
             }
 
-            // vertices = new Float32Array(vertices);
             this.g_RandomTargetXArr = new Float32Array(randomTargetXArr);
             this.g_RandomTargetYArr = new Float32Array(randomTargetYArr);
-
 
             // 增加或者删除顶点数量。超过了就删掉多余的
 
@@ -555,22 +541,40 @@ class NoiseEffect {
             }
 
             if (newVLength > gvLength) {
-                var tempVArray = new Float32Array(newNumLines * 6);
+                var tempVArray = new Float32Array(newNumLines * 14);
 
                 for (let index = 0; index < gvLength; index++) {
                     tempVArray[index] = this.g_Vertices[index];
                 }
-                for (let index = 0; index < newVLength; index += 6) {
 
-                    const targetIndex = index / 6;
+                // console.log();
+                for (let index = 0; index < newVLength; index += 14) {
+
+                    const targetIndex = index / 14;
                     tempVArray[index] = this.g_RandomTargetXArr[targetIndex];
                     tempVArray[index + 1] = this.g_RandomTargetYArr[targetIndex];
                     tempVArray[index + 2] = Z_DIMENSION;
-                    tempVArray[index + 3] = this.g_RandomTargetXArr[targetIndex];
-                    tempVArray[index + 4] = this.g_RandomTargetYArr[targetIndex];
-                    tempVArray[index + 5] = Z_DIMENSION;
+
+
+                    tempVArray[index + 7] = this.g_RandomTargetXArr[targetIndex];
+                    tempVArray[index + 8] = this.g_RandomTargetYArr[targetIndex];
+                    tempVArray[index + 9] = Z_DIMENSION;
+
                 }
                 this.g_Vertices = tempVArray;
+            }
+
+            for (let index = 0; index < newVLength; index += 14) {
+                const targetIndex = index / 14;
+                this.g_Vertices[index + 3] = randomTargetIndex[targetIndex].r;
+                this.g_Vertices[index + 4] = randomTargetIndex[targetIndex].g;
+                this.g_Vertices[index + 5] = randomTargetIndex[targetIndex].b;
+                this.g_Vertices[index + 6] = randomTargetIndex[targetIndex].a;
+
+                this.g_Vertices[index + 10] = randomTargetIndex[targetIndex].r;
+                this.g_Vertices[index + 11] = randomTargetIndex[targetIndex].g;
+                this.g_Vertices[index + 12] = randomTargetIndex[targetIndex].b;
+                this.g_Vertices[index + 13] = randomTargetIndex[targetIndex].a/2;
             }
 
             this.numLines = newNumLines;

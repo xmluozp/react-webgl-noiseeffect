@@ -109,6 +109,7 @@ export default App;
 | id            | String        | "canvas_noiseeffect"| id of Canvas, in case of multiple effects |
 | index         | Integer       |  0                  | Index of current displaying image      |
 | color         | String        |  "#FFFFFF"          |                                       |
+| isColorful    | Boolean       |  false              | If show original color, eats memory  |
 | display       | Boolean       |    true             |                                       |
 | density       | Float         |    0.5              |                                       |
 | speed         | Float         |    1                | How fast of switching image           |
