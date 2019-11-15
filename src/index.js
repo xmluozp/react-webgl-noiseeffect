@@ -3,7 +3,7 @@ import NoiseEffect from './utils/effectClass.js';
 import NoiseEffectColor from './utils/effectClassColor.js';
 
 
-const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, isColorful = false, display, density, onLoad, blur, speed = 1 }) => {
+const NoiseEffectComponent = ({ images, id = 'canvas_noiseeffect', index, color, isColorful = false, display = true, density = 1, onLoad, blur = 1, speed = 1 }) => {
 
     const [effect, setEffect] = useState( isColorful? new NoiseEffectColor(images): new NoiseEffect(images));
 
