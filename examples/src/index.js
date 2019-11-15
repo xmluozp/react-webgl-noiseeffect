@@ -11,27 +11,27 @@ const App = () => {
     const [display, setDisplay] = useState(true)
     const [blur, setBlur] = useState(true)
 
-    const images = [
-        { src: "examples/src/images/01.png", width: 128, height: 128 },
-        { src: "examples/src/images/02.png", width: 128, height: 128 },
-        { src: "examples/src/images/03.png", width: 128, height: 128 }
-    ]
-
-    const images2 = [
-        { src: "examples/src/images/01.png", width: 128, height: 128 },
-        { src: "examples/src/images/logo192.png", width: 128, height: 128 },
-    ]
-
     // const images = [
-    //     { src: "images/01.png", width: 128, height: 128 },
-    //     { src: "images/02.png", width: 128, height: 128 },
-    //     { src: "images/03.png", width: 128, height: 128 }
+    //     { src: "examples/src/images/01.png", width: 128, height: 128 },
+    //     { src: "examples/src/images/02.png", width: 128, height: 128 },
+    //     { src: "examples/src/images/03.png", width: 128, height: 128 }
     // ]
 
     // const images2 = [
-    //     { src: "images/01.png", width: 128, height: 128 },
-    //     { src: "images/logo192.png", width: 128, height: 128 },
+    //     { src: "examples/src/images/01.png", width: 128, height: 128 },
+    //     { src: "examples/src/images/logo192.png", width: 128, height: 128 },
     // ]
+
+    const images = [
+        { src: "images/01.png", width: 128, height: 128 },
+        { src: "images/02.png", width: 128, height: 128 },
+        { src: "images/03.png", width: 128, height: 128 }
+    ]
+
+    const images2 = [
+        { src: "images/01.png", width: 128, height: 128 },
+        { src: "images/logo192.png", width: 128, height: 128 },
+    ]
 
     return (
         <div>
@@ -67,8 +67,6 @@ const App = () => {
                 isColorful={true}
                 display={true}
                 density={0.5}
-                speed={1}
-                blur={blur}
             />
 
             <div>
